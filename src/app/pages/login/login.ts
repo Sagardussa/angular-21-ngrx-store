@@ -1,10 +1,14 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { Button } from '../../shared/components/button';
 import { RouterLink } from '@angular/router';
 import { form, FormField, minLength, required } from '@angular/forms/signals';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { formErrors } from '../../shared/components/form-errors';
+import { Store } from '@ngrx/store';
+import { authActions } from '../../shared/store/auth-actions';
+import { authFeature } from '../../shared/store/auth-feature';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-login',
@@ -61,7 +65,8 @@ import { formErrors } from '../../shared/components/form-errors';
 
       <!-- Button -->
       <button appButton size="lg" type="submit" [disabled]="loginForm().invalid()" class="w-full ">
-        Sign In
+       
+        {{isloading() ? 'Signing In...': ' Sign In'}}
       </button>
 
       <!-- Register Link -->
@@ -79,8 +84,8 @@ import { formErrors } from '../../shared/components/form-errors';
 })
 export class Login {
   loginModel = signal({
-    username: '',
-    password: '',
+    username: 'johnd',
+    password: 'm38rmF$',
   });
 
   loginForm = form(this.loginModel, (root) => {
@@ -88,12 +93,16 @@ export class Login {
     required(root.password, { message: 'password is required' });
     minLength(root.password, 6, { message: 'password must be 6 character long' });
   });
+  private readonly store = inject(Store)
+  protected readonly isloading = toSignal(this.store.select(authFeature.selectIsLoading))
 
   onSubmit(event: Event) {
     event.preventDefault();
 
     if (this.loginForm().valid()) {
       console.log('login form', this.loginForm().value());
+      this.store.dispatch(authActions.login(this.loginForm().value()));
+
     } else {
       console.log('login form is invalid');
     }

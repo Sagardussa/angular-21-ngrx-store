@@ -1,10 +1,14 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { Button } from '../../shared/components/button';
 import { form, minLength, required, FormField, validate } from '@angular/forms/signals';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { formErrors } from '../../shared/components/form-errors';
 import { registerSchema } from './register-schema';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { authFeature } from '../../shared/store/auth-feature';
+import { Store } from '@ngrx/store';
+import { authActions } from '../../shared/store/auth-actions';
 
 @Component({
   selector: 'app-register',
@@ -89,14 +93,20 @@ export class Register {
   });
 
   registerForm = form(this.registerModel, registerSchema);
+  private readonly store = inject(Store)
+  protected readonly isloading = toSignal(this.store.select(authFeature.selectIsLoading))
 
   onSubmit(event: Event) {
     event.preventDefault();
 
     if (this.registerForm().valid()) {
-      console.log('login form', this.registerForm().value());
+      console.log('registerForm form', this.registerForm().value());
+      const id = Date.now();
+      const { confirmPassword, ...res } = this.registerForm().value()
+      const registerReqauest = { id, ...res }
+      this.store.dispatch(authActions.register(registerReqauest));
     } else {
-      console.log('login form is invalid');
+      console.log('registerForm form is invalid');
     }
   }
 }
