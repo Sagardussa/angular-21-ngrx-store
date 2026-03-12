@@ -2,20 +2,20 @@ import { ChangeDetectionStrategy, Component, input, output } from "@angular/core
 import { LucideAngularModule, Star } from "lucide-angular";
 import { Button } from "../../shared/components/button";
 import { CurrencyPipe } from "@angular/common";
-import { Product } from "../../pages/products/type/product-type";
+import { Product } from "../../pages/products/types/product-type";
 
 @Component({
   selector: 'app-product-card',
   imports: [Button, LucideAngularModule, CurrencyPipe],
   template: `
     <div class="relative overflow-hidden rounded-lg bg-white">
-      <img
+      <!-- <img
         [src]="product().image"
         [alt]="product().title"
         width="300"
         height="300"
         class="w-full h-48 object-contain p-4"
-      />
+      /> -->
       <span class="absolute top-2 left-2 px-2 py-1 text-xs font-medium bg-green-200 text-slate-700 rounded">
         {{ product().category }}
       </span>

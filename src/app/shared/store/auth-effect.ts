@@ -3,7 +3,7 @@ import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { AuthApi } from "../services/auth-api";
 import { Router } from "@angular/router";
 import { authActions } from "./auth-actions";
-import { catchError, map, of, switchMap } from "rxjs";
+import { catchError, map, of, switchMap, tap } from "rxjs";
 import { MyLocalStorage } from "../services/storage";
 import { extractToken } from "../util/extractToken";
 import { NgToastService } from "ng-angular-popup";
@@ -82,3 +82,26 @@ export const regsiterEffect = createEffect(
     }
 
 )
+
+
+export const logoutEffect = createEffect(
+    (
+        actions$ = inject(Actions),
+        storage = inject(MyLocalStorage),
+        router = inject(Router),
+        toast = inject(NgToastService)
+    ) => {
+        return actions$.pipe(
+            ofType(authActions.logout),
+            tap(() => {
+                storage.removeItem('ngrxStore_token');
+                router.navigateByUrl('/login');
+                toast.success('Logout Successful', 'SUCCESS');
+            }),
+            map(() => authActions.logoutSuccess())
+        );
+    },
+    {
+        functional: true,
+    }
+);

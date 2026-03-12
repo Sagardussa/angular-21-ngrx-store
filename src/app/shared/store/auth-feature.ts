@@ -1,4 +1,4 @@
-import { createFeature, createReducer, on } from "@ngrx/store"
+import { createFeature, createReducer, createSelector, on } from "@ngrx/store"
 import { authActions } from "./auth-actions"
 
 export type AuthState = {
@@ -8,8 +8,12 @@ export type AuthState = {
     isLoading: boolean,
 }
 
+
+const getStoredToken = (): string | null => {
+    return localStorage.getItem('ngrxstore_token');
+};
 export const initialAuthState: AuthState = {
-    token: null,
+    token: getStoredToken(),
     userId: null,
     error: null,
     isLoading: false
@@ -53,6 +57,18 @@ export const authFeature = createFeature({
             error
         })),
 
+        on(authActions.logoutSuccess, (state) => ({
+            ...state,
+            token: null,
+            userId: null,
+            isLoading: false,
+        }))
 
-    )
+
+
+    ),
+
+    extraSelectors: ({ selectToken }) => ({
+        selectIsAuthenticated: createSelector(selectToken, (token) => !!token),
+    }),
 })

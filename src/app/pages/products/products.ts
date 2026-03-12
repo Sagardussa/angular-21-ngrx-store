@@ -6,11 +6,13 @@ import { productFeature } from './store/product-feature';
 import { CommonModule } from '@angular/common';
 import { ProductCard } from '../../core/components/product-card';
 import { FormsModule } from '@angular/forms';
+import { Product } from './types/product-type';
+import { cartActions } from '../cart/store/cart-actions';
 
 @Component({
-    selector: 'app-products',
-    imports: [CommonModule, ProductCard, FormsModule],
-    template: ` 
+  selector: 'app-products',
+  imports: [CommonModule, ProductCard, FormsModule],
+  template: ` 
      <div class="py-8">
       <div class="flex items-center justify-between mb-8">
         <h1 class="text-3xl font-bold text-slate-900 mb-8">Products</h1>
@@ -37,7 +39,8 @@ import { FormsModule } from '@angular/forms';
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         @for (product of products(); track product.id) {
         <!-- <app-product-card (addToCart)="onAddToCart($event)" [product]="product" /> -->
-            <app-product-card [product]="product" />
+            <app-product-card (addToCart)= "onAddToCart($event)" [product]="product" />
+
 
         }
       </div>
@@ -45,16 +48,20 @@ import { FormsModule } from '@angular/forms';
     </div>`,
 })
 export class Products implements OnInit {
-    protected searchQuery = signal('')
-    private store = inject(Store);
-    protected readonly products = toSignal(this.store.select(productFeature.selectFilteredProducts));
-    protected readonly loading = toSignal(this.store.select(productFeature.selectLoading));
+  protected searchQuery = signal('')
+  private store = inject(Store);
+  protected readonly products = toSignal(this.store.select(productFeature.selectFilteredProducts));
+  protected readonly loading = toSignal(this.store.select(productFeature.selectLoading));
 
-    ngOnInit(): void {
-        this.store.dispatch(productActions.load());
-    }
-    protected onSearch(query: string): void {
-        console.log("query",query);
-        this.store.dispatch(productActions.search({ searchQuery: query }));
-    }
+
+  protected onSearch(query: string): void {
+    this.store.dispatch(productActions.search({ searchQuery: query }));
+  }
+  ngOnInit(): void {
+    this.store.dispatch(productActions.load());
+  }
+
+  protected onAddToCart(product: Product): void {
+    this.store.dispatch(cartActions.addToCart({ product }));
+  }
 }

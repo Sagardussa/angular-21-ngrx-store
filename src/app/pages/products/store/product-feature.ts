@@ -1,6 +1,6 @@
 import { createFeature, createReducer, on } from '@ngrx/store';
 import { productActions } from './product-actions';
-import { Product } from '../type/product-type';
+import { Product } from '../types/product-type';
 
 export type ProductState = {
   products: Product[]; // 20 records

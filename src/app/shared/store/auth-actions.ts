@@ -13,8 +13,7 @@ export const authActions = createActionGroup({
         registerSuccess: emptyProps(),
         registerfailure: props<{ error: string }>(),
 
-
-
-
+        logout: emptyProps(),
+        logoutSuccess: emptyProps(),
     }
 })

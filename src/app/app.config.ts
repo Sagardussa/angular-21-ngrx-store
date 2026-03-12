@@ -20,7 +20,7 @@ export const appConfig: ApplicationConfig = {
     provideState(authFeature),
     // provideNgToast(),
     provideNgToast({
-      duration: 3000,              // Default 5 seconds
+      duration: 2000,              // Default 5 seconds
       position: 'toaster-top-right',       // Default position
       maxToasts: 3,                // Max 3 toasts at once
       minWidth: 400,                  // Toast width in pixels
@@ -33,7 +33,7 @@ export const appConfig: ApplicationConfig = {
       provide: API_URL,
       useValue: 'https://fakestoreapi.com'
     }
-    
+
   ],
 
 };

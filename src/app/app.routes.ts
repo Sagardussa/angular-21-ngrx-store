@@ -5,6 +5,10 @@ import { provideEffects } from '@ngrx/effects';
 import * as productEffect from './pages/products/store/product-effect';
 import { profileFeature } from './pages/profile/store/profile-feature';
 import * as  profileEffects from './pages/profile/store/profile-effect';
+import { cartFeature } from './pages/cart/store/cart-feature';
+import * as  cartEffects from './pages/cart/store/cart-effect';
+import { authGuard } from './core/guards/auth-guard';
+
 
 export const routes: Routes = [
   { path: 'login', loadComponent: () => import('./pages/login/login').then((m) => m.Login) },
@@ -15,7 +19,9 @@ export const routes: Routes = [
 
   {
     path: '',
-    canActivate: [],
+    canActivate: [authGuard],
+    providers: [provideState(cartFeature), provideEffects(cartEffects)],
+
     loadComponent: () => import('./pages/main-layout').then((m) => m.MainLayout),
     children: [
       {
